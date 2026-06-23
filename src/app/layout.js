@@ -1,5 +1,6 @@
 import { Jost } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/shared/Navbar";
 
 const jostFont = Jost({
   variable: "--font-jost-sans",
@@ -18,7 +19,12 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${jostFont.className} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Navbar />
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
