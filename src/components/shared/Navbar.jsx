@@ -25,10 +25,16 @@ const Navbar = () => {
         }
     ];
 
+    const dynamicDashboardLinksByRole = {
+        SELLER: "/dashboard/seller",
+        BUYER: "/dashboard/buyer",
+        ADMIN: "/dashboard/admin"
+    }
+
     if (!isPending && user?.id) {
         navLinks.push({
             label: "Dashboard",
-            href: "/dashboard",
+            href: dynamicDashboardLinksByRole[user?.role || "BUYER"]
         })
     }
 

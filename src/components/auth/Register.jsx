@@ -28,7 +28,8 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
+        const targetForm = e.target;
+        const formData = new FormData(targetForm);
         const data = Object.fromEntries(formData.entries());
 
         if (!imageFile) {
@@ -58,15 +59,17 @@ export default function Register() {
                 status: "PENDING",
             };
 
-            console.log('Submitted Data:', finalData);
 
-            const { data: response, error } = await authClient.signUp.email(finalData);
+            const { data: response } = await authClient.signUp.email(finalData);
 
             if (!response?.user?.id) {
                 return toast.error('Failed to create user');
             }
             toast.success("Your account has been created");
-            
+            targetForm.reset();
+            setImageFile(null);
+            setImagePreview(undefined);
+
         } catch (error) {
             toast.error(error.message || 'Something went wrong');
         } finally {
