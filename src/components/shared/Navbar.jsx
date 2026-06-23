@@ -1,6 +1,15 @@
+'use client'
+
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+    const { data: session, isPending } = authClient.useSession();
+    const router = useRouter();
+
+    const user = session?.user;
+
     const navLinks = [
         {
             label: "Home",
@@ -16,6 +25,18 @@ const Navbar = () => {
         }
     ];
 
+    if (!isPending && user?.id) {
+        navLinks.push({
+            label: "Dashboard",
+            href: "/dashboard",
+        })
+    }
+
+    const handleLogOut = async () => {
+        await authClient.signOut();
+        router.push("/");
+    }
+
     return (
         <div className=" bg-base-100 shadow-sm">
             <div className="max-w-7xl mx-auto navbar">
@@ -28,9 +49,12 @@ const Navbar = () => {
                             tabIndex="-1"
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                             {
-                                navLinks.map(({ label, href }, index) => {
-                                    return <li key={index}><Link href={href}>{label}</Link></li>
-                                })
+                                isPending ?
+                                    <span className="loading loading-spinner loading-md"></span>
+                                    :
+                                    navLinks.map(({ label, href }, index) => {
+                                        return <li key={index}><Link href={href}>{label}</Link></li>
+                                    })
                             }
                         </ul>
                     </div>
@@ -39,15 +63,28 @@ const Navbar = () => {
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
                         {
-                            navLinks.map(({ label, href }, index) => {
-                                return <li key={index}><Link href={href}>{label}</Link></li>
-                            })
+                            isPending ?
+                                <span className="loading loading-spinner loading-md"></span>
+                                :
+                                navLinks.map(({ label, href }, index) => {
+                                    return <li key={index}><Link href={href}>{label}</Link></li>
+                                })
                         }
                     </ul>
                 </div>
                 <div className="navbar-end flex flex-row gap-2">
-                    <Link href="/login" className="btn btn-sm btn-soft rounded-full">login</Link>
-                    <Link href="/register" className="btn btn-sm btn-primary rounded-full">Register</Link>
+                    {
+                        isPending ?
+                            <span className="loading loading-spinner loading-md"></span>
+                            :
+                            user?.id ?
+                                <button onClick={handleLogOut} className="btn btn-sm btn-soft rounded-full cursor-pointer">Logout</button>
+                                :
+                                <>
+                                    <Link href="/login" className="btn btn-sm btn-soft rounded-full">Login</Link>
+                                    <Link href="/register" className="btn btn-sm btn-primary rounded-full">Register</Link>
+                                </>
+                    }
                 </div>
             </div>
         </div>
