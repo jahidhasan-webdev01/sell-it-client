@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FiHome, FiLogOut, FiUser, FiX } from "react-icons/fi";
 import { CgAdd, CgProductHunt } from "react-icons/cg";
 import {
@@ -18,10 +18,16 @@ import { authClient } from '@/lib/auth-client';
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
     const pathname = usePathname();
+    const router = useRouter();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const buyerNavItems = [
         { icon: FiHome, label: "Dashboard Overview", href: "/dashboard/buyer" },
@@ -53,9 +59,15 @@ export default function Sidebar() {
         ADMIN: adminNavItems
     }
 
-    const navItems = dynamicNavLinksByRole[user?.role || "BUYER"];
+    const currentRole = mounted ? (user?.role || "BUYER") : "BUYER";
+    const navItems = dynamicNavLinksByRole[currentRole];
 
     const toggleSidebar = () => setIsOpen(!isOpen);
+
+    const handleLogOut = async () => {
+        await authClient.signOut();
+        router.push("/");
+    }
 
     return (
 
@@ -86,7 +98,7 @@ export default function Sidebar() {
 
                 <div className="flex flex-col gap-6 pt-6 overflow-y-auto">
                     <div className="hidden lg:block px-6">
-                        <p className="text-xs text-base-content/50 font-medium mt-0.5">{user?.role || "BUYER"} Dashboard</p>
+                        <p className="text-xs text-base-content/50 font-medium mt-0.5">{currentRole} Dashboard</p>
                     </div>
 
                     {/* Navigation Menu */}
@@ -117,7 +129,7 @@ export default function Sidebar() {
 
                 <div className="p-4 border-t border-base-200">
                     <button
-                        onClick={() => console.log('Signout triggered')}
+                        onClick={() => handleLogOut}
                         className="btn btn-sm btn-ghost text-error hover:bg-error/10 w-full justify-start gap-3 rounded-xl normal-case h-11 px-4"
                     >
                         <FiLogOut className="text-lg" />

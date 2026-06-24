@@ -2,11 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { FiAlertCircle, FiArrowLeft, FiHome, FiSearch } from 'react-icons/fi';
+import { FiAlertCircle, FiHome, FiSearch } from 'react-icons/fi';
 
 export default function NotFound() {
-    const router = useRouter();
 
     return (
         <div className="min-h-dvh flex items-center justify-center p-4">
@@ -50,14 +48,7 @@ export default function NotFound() {
                     </ul>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button
-                        onClick={() => router.back()}
-                        className="btn btn-outline rounded-xl flex-1 gap-2 order-2 sm:order-1 normal-case"
-                    >
-                        <FiArrowLeft className="text-lg" /> Back Track
-                    </button>
-
+                <div>
                     <Link
                         href="/"
                         className="btn btn-primary rounded-xl flex-1 gap-2 order-1 sm:order-2 normal-case text-primary-content"
@@ -65,7 +56,6 @@ export default function NotFound() {
                         <FiHome className="text-lg" /> Go Home
                     </Link>
                 </div>
-
             </div>
         </div>
     );
