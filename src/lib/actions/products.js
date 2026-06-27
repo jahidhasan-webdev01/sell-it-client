@@ -29,3 +29,21 @@ export const deleteProduct = async (productId) => {
 
     return response.json();
 }
+
+export const updateProductStatus = async (productId, newStatus) => {
+    const response = await fetch(`${baseURL}/api/update-product-status?productId=${productId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }) 
+    });
+
+    return response.json();
+};
+
+export const deleteProductByAdmin = async (productId) => {
+    const response = await fetch(`${baseURL}/api/admin/delete-product?productId=${productId}`, {
+        method: 'DELETE'
+    });
+
+    return response.json();
+}
