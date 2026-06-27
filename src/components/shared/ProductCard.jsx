@@ -28,7 +28,7 @@ const ProductCard = ({ product }) => {
                         {product.title}
                     </h2>
                     {product.description && (
-                        <p className="text-xs text-base-content/50 line-clamp-1">
+                        <p className="text-xs text-base-content/50 line-clamp-2">
                             {product.description}
                         </p>
                     )}

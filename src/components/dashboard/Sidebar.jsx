@@ -60,6 +60,7 @@ export default function Sidebar() {
     }
 
     const currentRole = mounted ? (user?.role || "BUYER") : "BUYER";
+    console.log("currentRole", currentRole);
     const navItems = dynamicNavLinksByRole[currentRole];
 
     const toggleSidebar = () => setIsOpen(!isOpen);

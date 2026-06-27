@@ -37,8 +37,8 @@ export default function Register() {
             return;
         }
 
-        if (data.password.length < 6) {
-            toast.error('Password must be at least 6 characters long');
+        if (data.password.length < 8) {
+            toast.error('Password must be at least 8 characters long');
             return;
         }
 
@@ -60,10 +60,12 @@ export default function Register() {
             };
 
 
-            const { data: response } = await authClient.signUp.email(finalData);
+            const { data: response , error} = await authClient.signUp.email(finalData);
 
-            if (!response?.user?.id) {
-                return toast.error('Failed to create user');
+            console.log("response", response);
+            console.log("error", error);
+            if (error) {
+                return toast.error(error?.message);
             }
             toast.success("Your account has been created");
             targetForm.reset();
