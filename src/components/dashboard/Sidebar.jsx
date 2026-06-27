@@ -129,7 +129,7 @@ export default function Sidebar() {
 
                 <div className="p-4 border-t border-base-200">
                     <button
-                        onClick={() => handleLogOut}
+                        onClick={handleLogOut}
                         className="btn btn-sm btn-ghost text-error hover:bg-error/10 w-full justify-start gap-3 rounded-xl normal-case h-11 px-4"
                     >
                         <FiLogOut className="text-lg" />
