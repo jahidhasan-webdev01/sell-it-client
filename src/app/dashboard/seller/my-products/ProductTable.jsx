@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
     FiEdit3,
@@ -33,6 +33,10 @@ const ProductTable = ({ products: initialProducts }) => {
         stock: "",
         description: ""
     });
+
+    useEffect(() => {
+        setProducts(initialProducts);
+    }, [initialProducts]);
 
     const handleEditClick = (product) => {
         setEditingProduct(product);
@@ -119,7 +123,6 @@ const ProductTable = ({ products: initialProducts }) => {
 
                 if (!imageResult || !imageResult?.data?.url) {
                     toast.error("Something went wrong with the image upload.");
-                    setLoading(false);
                     return;
                 }
                 finalImageUrl = imageResult.data.url;
@@ -150,7 +153,6 @@ const ProductTable = ({ products: initialProducts }) => {
         } catch (error) {
             toast.error("Failed to update product.");
         } finally {
-            setLoading(true);
             setLoading(false);
         }
     };
@@ -175,85 +177,82 @@ const ProductTable = ({ products: initialProducts }) => {
 
     return (
         <div className="w-full bg-base-100 rounded-2xl shadow-sm border border-base-300 overflow-hidden">
-            {
-                products.length < 1 ?
-                    <EmptyState />
-                    :
-                    <div className="w-full max-w-full overflow-x-auto max-h-[calc(100vh-220px)] overflow-y-auto block">
-                        <table className="table table-zebra w-full min-w-[900px] table-auto border-separate border-spacing-0">
-                            <thead className="sticky top-0 z-10 bg-base-100">
-                                <tr className="bg-base-200/80 backdrop-blur-sm text-base-content/80 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
-                                    <th className="w-20 bg-inherit">Image</th>
-                                    <th className="w-52 bg-inherit">Product Title</th>
-                                    <th className="w-32 bg-inherit">Category</th>
-                                    <th className="w-28 bg-inherit">Condition</th>
-                                    <th className="w-28 bg-inherit">Price</th>
-                                    <th className="w-24 bg-inherit">Stock</th>
-                                    <th className="w-36 bg-inherit">Status</th>
-                                    <th className="w-24 text-center bg-inherit">Actions</th>
+            {products.length < 1 ? (
+                <EmptyState />
+            ) : (
+                <div className="w-full max-w-full overflow-x-auto max-h-[calc(100vh-220px)] overflow-y-auto block">
+                    <table className="table table-zebra w-full min-w-[900px] table-auto border-separate border-spacing-0">
+                        <thead className="sticky top-0 z-10 bg-base-100">
+                            <tr className="bg-base-200/80 backdrop-blur-sm text-base-content/80 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+                                <th className="w-20 bg-inherit">Image</th>
+                                <th className="w-52 bg-inherit">Product Title</th>
+                                <th className="w-32 bg-inherit">Category</th>
+                                <th className="w-28 bg-inherit">Condition</th>
+                                <th className="w-28 bg-inherit">Price</th>
+                                <th className="w-24 bg-inherit">Stock</th>
+                                <th className="w-36 bg-inherit">Status</th>
+                                <th className="w-24 text-center bg-inherit">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products.map((product) => (
+                                <tr key={product._id} className="hover:bg-base-200/30 transition-colors align-middle">
+                                    <td>
+                                        <div className="avatar">
+                                            <div className="w-12 h-12 rounded-xl bg-base-300 relative overflow-hidden ring-1 ring-base-content/5">
+                                                <Image
+                                                    src={product.image || "https://i.ibb.co/YTtLPJ3B/Screenshot-2026-06-10-193933.png"}
+                                                    alt={product.title || "Product image"}
+                                                    fill
+                                                    sizes="48px"
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="font-semibold text-sm max-w-[200px] truncate">{product.title}</td>
+                                    <td className="text-sm font-medium text-base-content/80 capitalize">{product.category}</td>
+                                    <td>
+                                        <span className={`badge badge-sm font-bold tracking-wide ${product.condition === 'New' ? 'badge-success bg-success/10 text-success border-success/20' :
+                                            product.condition === 'Like New' ? 'badge-primary bg-primary/10 text-primary border-primary/20' : 'badge-ghost'
+                                            }`}>
+                                            {product.condition || 'Used'}
+                                        </span>
+                                    </td>
+                                    <td className="text-sm font-mono font-semibold text-base-content/90">{product.price} BDT</td>
+                                    <td className="text-sm font-mono text-base-content/70">{product.stock ?? 0}</td>
+                                    <td>
+                                        <span className={`badge font-bold rounded-lg text-xs tracking-wider px-3 py-2 ${product.status === "APPROVED" ? "bg-success/10 text-success border-success/20" :
+                                            product.status === "BLOCKED" ? "bg-error/10 text-error border-error/20" :
+                                                "bg-warning/10 text-warning border-warning/20"
+                                            }`}>
+                                            {product.status || "PENDING"}
+                                        </span>
+                                    </td>
+                                    <td className="text-center">
+                                        <div className="flex items-center justify-center gap-1">
+                                            <button
+                                                onClick={() => handleEditClick(product)}
+                                                className="btn btn-ghost btn-sm text-info hover:bg-info/10 btn-square rounded-xl"
+                                                title="Edit Product Details"
+                                            >
+                                                <FiEdit3 className="text-lg" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteProduct(product._id)}
+                                                className="btn btn-ghost btn-sm text-error hover:bg-error/10 btn-square rounded-xl"
+                                                title="Delete Product Listing"
+                                            >
+                                                <FiTrash2 className="text-lg" />
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    products.map((product) => (
-                                        <tr key={product._id} className="hover:bg-base-200/30 transition-colors align-middle">
-                                            <td>
-                                                <div className="avatar">
-                                                    <div className="w-12 h-12 rounded-xl bg-base-300 relative overflow-hidden ring-1 ring-base-content/5">
-                                                        <Image
-                                                            src={product.image || "https://i.ibb.co/YTtLPJ3B/Screenshot-2026-06-10-193933.png"}
-                                                            alt={product.title || "Product image"}
-                                                            fill
-                                                            sizes="48px"
-                                                            className="object-cover"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="font-semibold text-sm max-w-[200px] truncate">{product.title}</td>
-                                            <td className="text-sm font-medium text-base-content/80 capitalize">{product.category}</td>
-                                            <td>
-                                                <span className={`badge badge-sm font-bold tracking-wide ${product.condition === 'New' ? 'badge-success bg-success/10 text-success border-success/20' :
-                                                    product.condition === 'Like New' ? 'badge-primary bg-primary/10 text-primary border-primary/20' : 'badge-ghost'
-                                                    }`}>
-                                                    {product.condition || 'Used'}
-                                                </span>
-                                            </td>
-                                            <td className="text-sm font-mono font-semibold text-base-content/90">{product.price} BDT</td>
-                                            <td className="text-sm font-mono text-base-content/70">{product.stock ?? 0}</td>
-                                            <td>
-                                                <span className={`badge font-bold rounded-lg text-xs tracking-wider px-3 py-2 ${product.status === "APPROVED" ? "bg-success/10 text-success border-success/20" :
-                                                    product.status === "BLOCKED" ? "bg-error/10 text-error border-error/20" :
-                                                        "bg-warning/10 text-warning border-warning/20"
-                                                    }`}>
-                                                    {product.status || "PENDING"}
-                                                </span>
-                                            </td>
-                                            <td className="text-center">
-                                                <div className="flex items-center justify-center gap-1">
-                                                    <button
-                                                        onClick={() => handleEditClick(product)}
-                                                        className="btn btn-ghost btn-sm text-info hover:bg-info/10 btn-square rounded-xl"
-                                                        title="Edit Product Details"
-                                                    >
-                                                        <FiEdit3 className="text-lg" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteProduct(product._id)}
-                                                        className="btn btn-ghost btn-sm text-error hover:bg-error/10 btn-square rounded-xl"
-                                                        title="Delete Product Listing"
-                                                    >
-                                                        <FiTrash2 className="text-lg" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-            }
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {editingProduct && (
                 <div className="modal modal-open backdrop-blur-sm transition-all z-50">

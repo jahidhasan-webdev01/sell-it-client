@@ -1,10 +1,27 @@
+'use client'; 
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 const ProductCard = ({ product }) => {
+    const cardVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { 
+            opacity: 1, 
+            y: 0,
+            transition: { duration: 0.4, ease: "easeOut" }
+        }
+    };
+
     return (
-        <div
-            className="group bg-base-100 rounded-2xl border border-base-300 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden"
+        <motion.div
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }} 
+            whileHover={{ y: -4 }} 
+            className="group bg-base-100 rounded-2xl border border-base-300 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden h-full"
         >
             <div className="aspect-square w-full bg-base-200 relative overflow-hidden">
                 <Image
@@ -39,15 +56,20 @@ const ProductCard = ({ product }) => {
                         {product.price} <span className="text-xs font-sans font-medium text-base-content/70">BDT</span>
                     </span>
 
-                    <Link
-                        href={`/products/${product._id}`}
-                        className="btn btn-primary btn-sm rounded-full px-4 font-semibold text-xs shadow-sm hover:shadow"
+                    <motion.div
+                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.02 }}
                     >
-                        Details
-                    </Link>
+                        <Link
+                            href={`/products/${product._id}`}
+                            className="btn btn-primary btn-sm rounded-full px-4 font-semibold text-xs shadow-sm"
+                        >
+                            Details
+                        </Link>
+                    </motion.div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

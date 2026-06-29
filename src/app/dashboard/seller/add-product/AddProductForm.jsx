@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
+import React, { useState } from 'react';
+import Image from 'next/image';
+import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiUploadCloud, FiPackage, FiDollarSign, FiLayers, FiInfo, FiTag } from 'react-icons/fi';
 import PageHeading from '@/components/dashboard/PageHeading';
 import { addProduct } from '@/lib/actions/products';
 import { authClient } from '@/lib/auth-client';
 import { uploadImage } from '@/utils/uploadImage';
-import Image from 'next/image';
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';
-import { FiUploadCloud, FiPackage, FiDollarSign, FiLayers, FiInfo, FiTag } from 'react-icons/fi';
 
-const AddProductForm = ({categories}) => {
+const AddProductForm = ({ categories }) => {
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
@@ -90,55 +91,72 @@ const AddProductForm = ({categories}) => {
     return (
         <div>
             <PageHeading title="Add New Product Listing" subtitle="Fill in the detailed fields below to list your item on the marketplace." />
-            <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm overflow-hidden">
-
+            <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="bg-base-100 rounded-2xl border border-base-300 shadow-sm overflow-hidden"
+            >
                 <form onSubmit={handleSubmit} className="p-6 lg:p-8 space-y-6">
-
-                    {/* Image Upload Area */}
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-base-content/80 flex items-center gap-1.5">
                             Product Media <span className="text-error">*</span>
                         </label>
                         <div className="flex flex-col items-center justify-center w-full min-h-[200px] border-2 border-dashed border-base-300 rounded-2xl bg-base-50/50 hover:bg-base-200/20 transition-all group relative overflow-hidden">
-                            {imagePreview ? (
-                                <div className="w-full h-full min-h-[200px] relative flex items-center justify-center p-4">
-                                    <Image
-                                        width={200}
-                                        height={200}
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="max-h-[180px] rounded-xl object-contain shadow-sm"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setImagePreview(null)}
-                                        className="absolute top-3 right-3 btn btn-circle btn-xs btn-error shadow-md"
+                            <AnimatePresence mode="wait">
+                                {imagePreview ? (
+                                    <motion.div 
+                                        key="preview"
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="w-full h-full min-h-[200px] relative flex items-center justify-center p-4"
                                     >
-                                        ✕
-                                    </button>
-                                </div>
-                            ) : (
-                                <label className="flex flex-col items-center justify-center w-full h-full p-6 cursor-pointer">
-                                    <FiUploadCloud className="text-4xl text-base-content/30 group-hover:text-primary group-hover:scale-110 transition-all mb-2" />
-                                    <span className="text-sm font-semibold text-base-content">Click to upload product image</span>
-                                    <span className="text-xs text-base-content/50 mt-1">Supports PNG, JPG or JPEG</span>
-                                    <input
-                                        type="file"
-                                        name="image"
-                                        accept="image/*"
-                                        required
-                                        onChange={handleImageChange}
-                                        className="hidden"
-                                    />
-                                </label>
-                            )}
+                                        <Image
+                                            width={200}
+                                            height={200}
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="max-h-[180px] rounded-xl object-contain shadow-sm"
+                                        />
+                                        <motion.button
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                            type="button"
+                                            onClick={() => setImagePreview(null)}
+                                            className="absolute top-3 right-3 btn btn-circle btn-xs btn-error shadow-md"
+                                        >
+                                            ✕
+                                        </motion.button>
+                                    </motion.div>
+                                ) : (
+                                    <motion.label 
+                                        key="uploader"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="flex flex-col items-center justify-center w-full h-full p-6 cursor-pointer"
+                                    >
+                                        <FiUploadCloud className="text-4xl text-base-content/30 group-hover:text-primary group-hover:scale-110 transition-all mb-2" />
+                                        <span className="text-sm font-semibold text-base-content">Click to upload product image</span>
+                                        <span className="text-xs text-base-content/50 mt-1">Supports PNG, JPG or JPEG</span>
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            accept="image/*"
+                                            required
+                                            onChange={handleImageChange}
+                                            className="hidden"
+                                        />
+                                    </motion.label>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
 
-                    {/* Grid Layout for Title & Fields */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        {/* Product Title */}
                         <div className="form-control md:col-span-2">
                             <label className="label pt-0">
                                 <span className="label-text font-semibold text-base-content/80">Product Title <span className="text-error">*</span></span>
@@ -155,7 +173,6 @@ const AddProductForm = ({categories}) => {
                             </div>
                         </div>
 
-                        {/* Category Selection */}
                         <div className="form-control">
                             <label className="label pt-0">
                                 <span className="label-text font-semibold text-base-content/80">Category <span className="text-error">*</span></span>
@@ -169,15 +186,13 @@ const AddProductForm = ({categories}) => {
                                     className="select select-bordered w-full pl-11 rounded-xl bg-base-50/30 focus:outline-none font-medium"
                                 >
                                     <option value="" disabled>Select Category</option>
-                                    {
-                                        categories?.map((category, index) => <option key={index} value={category?.name}>{category?.name}</option>)
-                                    }
-                                    
+                                    {categories?.map((category, index) => (
+                                        <option key={index} value={category?.name}>{category?.name}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
 
-                        {/* Condition Selection */}
                         <div className="form-control">
                             <label className="label pt-0">
                                 <span className="label-text font-semibold text-base-content/80">Item Condition <span className="text-error">*</span></span>
@@ -199,7 +214,6 @@ const AddProductForm = ({categories}) => {
                             </div>
                         </div>
 
-                        {/* Price Input */}
                         <div className="form-control">
                             <label className="label pt-0">
                                 <span className="label-text font-semibold text-base-content/80">Price (BDT) <span className="text-error">*</span></span>
@@ -217,7 +231,6 @@ const AddProductForm = ({categories}) => {
                             </div>
                         </div>
 
-                        {/* Stock Quantity */}
                         <div className="form-control">
                             <label className="label pt-0">
                                 <span className="label-text font-semibold text-base-content/80">Stock Quantity <span className="text-error">*</span></span>
@@ -235,7 +248,6 @@ const AddProductForm = ({categories}) => {
                             </div>
                         </div>
 
-                        {/* Description Textarea */}
                         <div className="form-control md:col-span-2">
                             <label className="label pt-0">
                                 <span className="label-text font-semibold text-base-content/80">Product Description <span className="text-error">*</span></span>
@@ -250,18 +262,19 @@ const AddProductForm = ({categories}) => {
                         </div>
                     </div>
 
-                    {/* Form Action Controls */}
                     <div className="flex items-center justify-end gap-3 pt-4 border-t border-base-200">
-                        <button
+                        <motion.button
+                            whileHover={!loading ? { scale: 1.02 } : {}}
+                            whileTap={!loading ? { scale: 0.98 } : {}}
                             type="submit"
                             disabled={loading}
                             className="btn btn-primary rounded-xl px-8 normal-case font-medium min-w-[140px]"
                         >
                             {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Publish Product'}
-                        </button>
+                        </motion.button>
                     </div>
                 </form>
-            </div>
+            </motion.div>
         </div>
     );
 };
