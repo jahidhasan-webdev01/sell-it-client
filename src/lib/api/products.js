@@ -1,9 +1,15 @@
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getAllProductsForAll = async () => {
-    const response = await fetch(`${baseURL}/api/products`)
+    const response = await fetch(`${baseURL}/api/products`);
 
-    return response.json() || [];
+    if (!response.ok) {
+        const text = await response.text();
+        console.log("Products API Error:", text);
+        throw new Error("Products API failed");
+    }
+
+    return response.json();
 }
 
 export const getProductDetails = async (productId) => {
