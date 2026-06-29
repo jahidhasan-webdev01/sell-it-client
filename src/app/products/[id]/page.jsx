@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { getProductDetails } from "@/lib/api/products";
 import Image from "next/image";
 import Link from "next/link";
-import { FiArrowLeft, FiShoppingBag, FiTag,  FiTruck, FiCornerUpLeft, FiShield } from "react-icons/fi";
+import { FiArrowLeft, FiShoppingBag, FiTag, FiTruck, FiCornerUpLeft, FiShield } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { authClient } from "@/lib/auth-client";
 
 const ProductDetailsPage = ({ params }) => {
+    const { data: session } = authClient.useSession();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -47,6 +49,14 @@ const ProductDetailsPage = ({ params }) => {
         );
     }
 
+    const checkoutPayload = {
+        productId: product?._id,
+        title: product?.title,
+        price: product?.price,
+        userId: session?.user?.id,
+        userEmail: session?.user?.email
+    };
+
     const fadeInUp = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
@@ -66,13 +76,13 @@ const ProductDetailsPage = ({ params }) => {
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
             <div className="mb-6">
                 <Link href="/products" className="inline-flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-primary transition-colors group">
-                    <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" /> 
+                    <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                     Back to all products
                 </Link>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-base-100 border border-base-300 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm relative overflow-hidden">
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4 }}
@@ -88,7 +98,7 @@ const ProductDetailsPage = ({ params }) => {
                     />
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     variants={staggerContainer}
                     initial="hidden"
                     animate="visible"
@@ -135,14 +145,21 @@ const ProductDetailsPage = ({ params }) => {
                     </div>
 
                     <motion.div variants={fadeInUp} className="mt-8 lg:mt-0 pt-6 border-t border-base-200">
-                        <motion.button 
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.99 }}
-                            className="btn btn-primary btn-md sm:btn-lg w-full rounded-2xl font-bold shadow-lg hover:shadow-xl gap-3 text-sm sm:text-base relative overflow-hidden transition-all duration-300"
-                        >
-                            <FiShoppingBag className="text-lg" />
-                            Purchase Item
-                        </motion.button>
+                        <form action="/api/checkout_sessions" method="POST">
+                            <input type="hidden" name="orderPayload" value={JSON.stringify(checkoutPayload)} />
+                            <section>
+                                <motion.button
+                                    type="submit"
+                                    role="link"
+                                    whileHover={{ scale: 1.01 }}
+                                    whileTap={{ scale: 0.99 }}
+                                    className="btn btn-primary btn-md sm:btn-lg w-full rounded-2xl font-bold shadow-lg hover:shadow-xl gap-3 text-sm sm:text-base relative overflow-hidden transition-all duration-300"
+                                >
+                                    <FiShoppingBag className="text-lg" />
+                                    Checkout
+                                </motion.button>
+                            </section>
+                        </form>
                     </motion.div>
                 </motion.div>
             </div>
