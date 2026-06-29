@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { FiAlertCircle, FiHome, FiSearch } from 'react-icons/fi';
 
 export default function NotFound() {
-
     return (
         <div className="min-h-dvh flex items-center justify-center p-4">
             <div className="max-w-md w-full text-center space-y-8 p-6 sm:p-8 bg-base-100 rounded-2xl shadow-xl border border-base-300 relative overflow-hidden">

@@ -11,8 +11,6 @@ const ProductsPage = async () => {
     const session = await getUserSession()
     const userId = session?.id;
 
-    console.log("USER WISH",userId);
-
     const wishlistData = userId ? await getWishlist(userId) : [];
     const wishlistedProductIds = wishlistData.map(item => item.productId);
 

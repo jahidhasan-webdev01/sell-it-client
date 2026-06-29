@@ -58,8 +58,6 @@ const ProductDetailsPage = ({ params }) => {
         sellerId: product?.sellerInfo?.userId
     };
 
-    console.log("SEND DATA", checkoutPayload);
-
     const fadeInUp = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }

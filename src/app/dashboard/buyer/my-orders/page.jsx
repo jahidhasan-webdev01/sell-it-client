@@ -8,8 +8,6 @@ const MyOrders = async () => {
 
     const orders =  await getMyOrders(user?.id);
 
-    console.log("orders", orders);
-
     return (
         <div>
             <PageHeading title="My Orders" subtitle="See the listing of your orders" />
