@@ -1,7 +1,13 @@
+import AboutUs from "@/components/home/AboutUs";
+import AllProduct from "@/components/home/AllProduct";
+import Contact from "@/components/home/Contact";
+
 export default function Home() {
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <h1>Welcome to sell it client home page</h1>
+    <div>
+      <AllProduct />
+      <AboutUs />
+      <Contact />
     </div>
   );
 }
