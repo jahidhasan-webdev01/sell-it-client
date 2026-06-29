@@ -40,6 +40,7 @@ const PaymentSuccessPage = ({ searchParams }) => {
 
                 const paymentInfo = {
                     orderId: sessionId,
+                    userId: data.userId,
                     transactionId: data.transactionId,
                     amount: data.amount,
                     paymentStatus: "SUCCESS"
