@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiCheckCircle, FiMail, FiArrowRight, FiShoppingBag, FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { savePaymentInfo } from "@/lib/actions/payment";
+import { confirmOrderAfterPayment } from "@/lib/actions/order";
 
 const PaymentSuccessPage = ({ searchParams }) => {
     const router = useRouter();
@@ -13,7 +15,7 @@ const PaymentSuccessPage = ({ searchParams }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const verifySession = async () => {
+        const verifyAndSaveOrder = async () => {
             try {
                 const resolvedParams = await searchParams;
                 const sessionId = resolvedParams?.session_id;
@@ -35,15 +37,38 @@ const PaymentSuccessPage = ({ searchParams }) => {
                 }
 
                 setSessionData(data);
+
+                const paymentInfo = {
+                    orderId: sessionId,
+                    transactionId: data.transactionId,
+                    amount: data.amount,
+                    paymentStatus: "SUCCESS"
+                }
+
+                const orderInfo = {
+                    transactionId: data.transactionId,
+                    buyerInfo: {
+                        userId: data.userId,
+                    },
+                    sellerInfo: {
+                        userId: data.sellerId,
+                    },
+                    productId: data.productId,
+                    paymentStatus: "PAID",
+                    orderStatus: "PROCESSING"
+                };
+
+                await savePaymentInfo(paymentInfo);
+                await confirmOrderAfterPayment(orderInfo);
+
             } catch (err) {
-                console.error(err);
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
-        verifySession();
+        verifyAndSaveOrder();
     }, [searchParams, router]);
 
     if (loading) {
@@ -134,7 +159,7 @@ const PaymentSuccessPage = ({ searchParams }) => {
                         <h4 className="text-xs font-bold uppercase tracking-wider text-base-content/40">Have Questions?</h4>
                         <p className="text-xs sm:text-sm text-base-content/70 leading-snug">
                             Feel free to reach our support team directly at{" "}
-                            <a href="mailto:orders@example.com" className="link link-primary font-medium group inline-flex items-center gap-0.5">
+                            <a href="mailto:admin@sell-it.com" className="link link-primary font-medium group inline-flex items-center gap-0.5">
                                 admin@sell-it.com
                                 <FiArrowRight className="text-xs opacity-0 -translate-x-1 group-hover:opacity-1 group-hover:translate-x-0 transition-all" />
                             </a>

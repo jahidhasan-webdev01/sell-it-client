@@ -54,8 +54,11 @@ const ProductDetailsPage = ({ params }) => {
         title: product?.title,
         price: product?.price,
         userId: session?.user?.id,
-        userEmail: session?.user?.email
+        userEmail: session?.user?.email,
+        sellerId: product?.sellerInfo?.userId
     };
+
+    console.log("SEND DATA", checkoutPayload);
 
     const fadeInUp = {
         hidden: { opacity: 0, y: 20 },

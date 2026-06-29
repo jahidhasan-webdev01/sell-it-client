@@ -33,6 +33,8 @@ export async function POST(req) {
             success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
             metadata: {
                 productId: orderPayload.productId || '',
+                sellerId: orderPayload.sellerId || '',
+                userId: orderPayload.userId || '', 
             }
         });
 
