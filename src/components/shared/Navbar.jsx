@@ -116,7 +116,7 @@ const Navbar = ({ categories }) => {
                                 ) : (
                                     <li key={label}>
                                         <div className="dropdown dropdown-hover">
-                                            <div tabIndex={0} role="button" className="px-4 py-2 cursor-pointer">
+                                            <div tabIndex={0} role="button" className="cursor-pointer">
                                                 Categories
                                             </div>
 
