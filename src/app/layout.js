@@ -22,10 +22,10 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <Header />
-        <div className="w-full max-w-7xl mx-auto px-2 xl:px-0 mt-0.5">
+        {/* <div className="w-full max-w-7xl mx-auto px-2 xl:px-0 mt-0.5"> */}
           {children}
           <Toaster position="top-center" reverseOrder={false} />
-        </div>
+        {/* </div> */}
       </body>
     </html>
   );
