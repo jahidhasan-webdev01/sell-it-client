@@ -1,7 +1,7 @@
 import { Jost } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/shared/Navbar";
 import { Toaster } from "react-hot-toast";
+import Header from "@/components/shared/Header";
 
 const jostFont = Jost({
   variable: "--font-jost-sans",
@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       className={`${jostFont.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
+        <Header />
         <div className="w-full max-w-7xl mx-auto px-2 xl:px-0">
           {children}
           <Toaster position="top-center" reverseOrder={false} />
