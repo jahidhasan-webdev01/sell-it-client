@@ -13,3 +13,9 @@ export const getAllCategories = async () => {
 
     return response.json();
 };
+
+export const getProductsByCategory = async (slug = "gadgets") => {
+    const response = await fetch(`${baseURL}/api/product/slug?slug=${slug}`);
+
+    return response.json();
+};
