@@ -11,3 +11,20 @@ export const confirmOrderAfterPayment = async (data) => {
 
     return response.json();
 }
+
+export const updateOrderStatus = async (id, orderStatus) => {
+    try {
+        const response = await fetch(`${baseURL}/api/orders/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ orderStatus }),
+        });
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        return { message: "Network error", error };
+    }
+};

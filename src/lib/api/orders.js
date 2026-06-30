@@ -5,3 +5,10 @@ export const getMyOrders = async (userId) => {
 
     return response.json() || [];
 }
+
+export const getAllOrdersForAdmin = async () => {
+    const response = await fetch(`${baseURL}/api/orders`)
+
+    return response.json() || [];
+}
+
