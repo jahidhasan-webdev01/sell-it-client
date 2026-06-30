@@ -12,3 +12,9 @@ export const getAllOrdersForAdmin = async () => {
     return response.json() || [];
 }
 
+export const getAllOrdersForSeller = async (userId) => {
+    const response = await fetch(`${baseURL}/api/seller/orders?userId=${userId}`)
+
+    return response.json() || [];
+}
+
