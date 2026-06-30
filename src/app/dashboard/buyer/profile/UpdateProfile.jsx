@@ -2,8 +2,13 @@
 
 import React, { useState } from 'react';
 import { FiUser, FiUploadCloud, FiCheck } from 'react-icons/fi';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { uploadImage } from '@/utils/uploadImage';
+import { authClient } from '@/lib/auth-client';
 
 const UpdateProfile = ({ user }) => {
+    const router = useRouter();
     const [name, setName] = useState(user?.name || '');
     const [imageFile, setImageFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -13,16 +18,40 @@ const UpdateProfile = ({ user }) => {
         setIsSubmitting(true);
         
         try {
-            const formData = new FormData();
-            formData.append('name', name);
+            let uploadedImageUrl = user?.image || '';
+
             if (imageFile) {
-                formData.append('image', imageFile); 
+                const imageData = new FormData();
+                imageData.append('image', imageFile);
+
+                const imageResult = await uploadImage(imageData);
+                
+                if (!imageResult?.data?.url) {
+                    toast.error("Image upload failed");
+                    setIsSubmitting(false);
+                    return;
+                }
+
+                uploadedImageUrl = imageResult.data.url;
             }
 
+            const result = await authClient.updateUser({
+                name: name,
+                image: uploadedImageUrl,
+            });
+
+            if (result?.error) {
+                toast.error(result.error.message || "Failed to update profile");
+                return;
+            }
+
+            toast.success("Profile updated successfully!");
             
-            console.log("Form Data Prepared");
+            router.refresh();
+            setImageFile(null);
+
         } catch (error) {
-            console.error(error);
+            toast.error("Something went wrong");
         } finally {
             setIsSubmitting(false);
         }
@@ -56,7 +85,7 @@ const UpdateProfile = ({ user }) => {
                     type="file" 
                     accept="image/*"
                     onChange={(e) => setImageFile(e.target.files[0])}
-                    className="file-input file-input-bordered file-input-sm sm:file-input-md w-full rounded-xl bg-base-200/30 text-sm focus:outline-none focus:border-primary"
+                    className="file-input file-input-bordered file-input-sm sm:file-input-md w-full rounded-xl bg-base-200/30 text-sm focus:outline-none focus:border-primary file-input-primary"
                 />
             </div>
 
