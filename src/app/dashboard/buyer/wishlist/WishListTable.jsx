@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import EmptyState from "@/components/empty/EmptyState";
+import Link from "next/link";
 
 const WishListTable = ({ wishlist }) => {
     const tableVariants = {
@@ -71,7 +72,7 @@ const WishListTable = ({ wishlist }) => {
 
                                             <td>
                                                 <div className="font-semibold text-sm text-base-content truncate max-w-[300px]" title={product.title}>
-                                                    {product.title || "Unknown Product"}
+                                                    <Link href={`/products/${item.productId}`}>{product.title || "Unknown Product"}</Link>
                                                 </div>
                                             </td>
 

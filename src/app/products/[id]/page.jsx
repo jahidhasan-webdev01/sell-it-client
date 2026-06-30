@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FiArrowLeft, FiShoppingBag, FiTag, FiTruck, FiCornerUpLeft, FiShield } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { authClient } from "@/lib/auth-client";
+import EmptyState from "@/components/empty/EmptyState";
 
 const ProductDetailsPage = ({ params }) => {
     const { data: session } = authClient.useSession();
@@ -40,11 +41,7 @@ const ProductDetailsPage = ({ params }) => {
     if (!product) {
         return (
             <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-                <h2 className="text-2xl font-bold text-base-content/80">Product Not Found</h2>
-                <p className="text-base-content/50 mt-2">The listing you are looking for does not exist or has been removed.</p>
-                <Link href="/products" className="btn btn-primary rounded-xl mt-6">
-                    <FiArrowLeft /> Back to Marketplace
-                </Link>
+                <EmptyState />
             </div>
         );
     }

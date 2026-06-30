@@ -5,3 +5,9 @@ export const getAdminStats = async () => {
 
     return response.json();
 }
+
+export const getBuyerStats = async (userId) => {
+    const response = await fetch(`${baseURL}/api/buyer/dashboard-stats?userId=${userId}`)
+
+    return response.json();
+}
